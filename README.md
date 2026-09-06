@@ -1,5 +1,13 @@
 # 447-SWE-GIS-Project
 A semester project creating a GIS map project.
+- [447-SWE-GIS-Project](#447-swe-gis-project)
+  - [Introduction](#introduction)
+  - [Problem](#problem)
+  - [Solution](#solution)
+  - [Program Structure Overview](#program-structure-overview)
+  - [Software and Hardware dependencies and prerequisites](#software-and-hardware-dependencies-and-prerequisites)
+  - [How to run](#how-to-run)
+  - [For Developers](#for-developers)
 
 ## Introduction
 
@@ -10,7 +18,7 @@ A semester project creating a GIS map project.
 ## Solution
 
 
-## Folder and File Explanation
+## Program Structure Overview
 
 
 ## Software and Hardware dependencies and prerequisites
