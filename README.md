@@ -30,6 +30,6 @@ A semester project creating a GIS map project.
 
 
 ## For Developers
-***When you open the readme file on VSCode, run this command to see the preview page with live changes.
+When you open the readme file on VSCode, run this command to see the preview page with live changes.
 Type out: Ctrl + k then v (mac -> Cmd + k then Cmd + v)
-Or This one: Ctrl + Shift + v (mac -> Cmd + Shift + V)***
+Or This one: Ctrl + Shift + v (mac -> Cmd + Shift + V)
