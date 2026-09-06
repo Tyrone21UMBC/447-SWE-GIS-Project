@@ -4,6 +4,12 @@ A semester project creating a GIS map project.
 ## Introduction
 
 
+## Problem
+
+
+## Solution
+
+
 ## Folder and File Explanation
 
 
