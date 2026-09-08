@@ -1,6 +1,14 @@
+import os
+from dotenv import load_dotenv
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine
 
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL is None:
+    raise ValueError("Database URL not found")
 
 engine = create_engine(DATABASE_URL)
 
@@ -13,9 +21,11 @@ SessionLocal = sessionmaker(
 class Base(DeclarativeBase):
     pass
 
-class User(Base):
-    __table__ = "users"
 
-    id = Column(Integer, primary_key=True)
-    username = Column(String)
-    email = Column(String)
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+

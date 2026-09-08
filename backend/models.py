@@ -1,17 +1,11 @@
-from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Column, Integer, String
+from database import Base
 
-
-
-
-
-
-class Base(DeclarativeBase):
-    pass
 
 class User(Base):
-    __table__ = "users"
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    username = Column(String)
-    email = Column(String)
+    username = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    hashed_password = Column(String, nullable=False)
