@@ -1,0 +1,23 @@
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: #ffffff;
+}
+
+.form {
+  background-color: #f3f4f6;
+  padding: 2.5rem;
+  border-radius: 12px;
+}
+
+.form-title {
+  color: #000000;
+}
+
+.form-group {
+  padding: 5px;
+}
