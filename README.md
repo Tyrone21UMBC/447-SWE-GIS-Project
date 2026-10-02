@@ -10,13 +10,13 @@ A semester project creating a GIS map project.
   - [For Developers](#for-developers)
 
 ## Introduction
-
-
+Have you ever wanted to view a designated University of Maryland, Baltimore County (UMBC) map? Then you find out UMBC doesn't have a designated map, but a pdf? Our main project was to create a designated UMBC map software mainly for the Facilities Department at UMBC but also open to the public.
 ## Problem
-
-
+UMBC's Facilities Management Department (FMD) has a designated map that students, staff, and facility managers use. The designated map is a pdf document that doesn’t work as well as an intended map and due to this, exploring certain features and landmarks poses problems, especially for the FMD as they need a convenient map to efficiently complete their duties. To sum it up, UMBC's FMD needs a comprehensive software to streamline and facilitate their facility management tasks.
 ## Solution
-
+We were proposed a solution for this problem. The solution is to create a software that solves those problems. The software in mind would:
+  - allow members of the FMD to view a specified UMBC map with appropriate map details to meet their specific needs
+  - allow users to explore Stormwater Facilities on the map
 
 ## Program Structure Overview
 
