@@ -1,4 +1,4 @@
-.header {
+/* .header {
   position: fixed;
   top: 0;
   left: 0;
@@ -15,19 +15,19 @@
 
   background-color: #ffffff;
   border-bottom: 1px solid #d1d5db;
-}
+} */
 
 
-.header-title {
+/* .header-title {
   
-}
-.header-logo {
+} */
+/* .header-logo {
   max-height: 6vh;
   width: auto;
   display: block;
-}
+} */
 
-.login-button {
+/* .login-button {
   margin-left: auto;
   display: inline-flex;
   align-items: center;
@@ -40,6 +40,6 @@
   font-size: 16px;
   text-decoration: none;
   cursor: pointer;
-}
+} */
 
 
