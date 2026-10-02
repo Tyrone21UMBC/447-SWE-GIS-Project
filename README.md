@@ -16,7 +16,9 @@ UMBC's Facilities Management Department (FMD) has a designated map that students
 ## Solution
 We were proposed a solution for this problem. The solution is to create a software that solves those problems. The software in mind would:
   - allow members of the FMD to view a specified UMBC map with appropriate map details to meet their specific needs
-  - allow users to explore Stormwater Facilities on the map
+  - allow users to explore Stormwater Facilities (SWF) on the map and interacting with those facilities
+  - allow users to create forms with pre-field data from those SWF from the map
+  - allow users to create reports of a collection of SWF forms
 
 ## Program Structure Overview
 
