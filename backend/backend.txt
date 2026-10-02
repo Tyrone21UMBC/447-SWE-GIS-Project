@@ -1,0 +1,25 @@
+Some backend info:
+databse.py:
+    - starts a session for the backend DB
+    - engine = create_engine(DATABASE_URL)  - creates an env session for each user
+    - the get_db() fetches a db so we can use it
+
+models.py:
+    - the tables in our database along with their features
+    - nullable = false means that field is req
+
+schema.py:
+    - The schema creates requirements to do actions, such as for log in it clarifies that you only need a email string and a password string
+    - The pydantic is a good library for python database creation
+
+security.py:
+    - This is how we encrypt user passwords
+    - We hash the passwords using a function from a library
+    - We are also using salts for more security
+
+main.py:
+    - info for actually running the backend
+    - all the endpoints and helper files
+    - all the different pages
+    - We're using rest API
+
