@@ -4,8 +4,18 @@ from models import User
 from schema import UserCreate, UserResponse, UserLogin
 from database import get_db, engine, Base
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:5174"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -61,7 +71,5 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
             "user_id": db_user.id,
             "username": db_user.username
     }
-    
-
 
 
