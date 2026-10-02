@@ -1,6 +1,8 @@
 import "./Header.css"
 import { NavLink, useLocation } from "react-router"
 import type { CSSProperties } from "react";
+import umbc_logo2 from "./umbc_logo_with_words.png";
+import React, { useState } from 'react';
 
 
 
@@ -18,7 +20,8 @@ const headerStyles: Record<string, CSSProperties> = {
     alignItems: "center",
     padding: "0 20px",
     boxSizing: "border-box",
-    backgroundColor: "#ffffff",
+    // backgroundColor: "#dfc861",
+    backgroundColor: "#f7cc0d",
     borderBottom: "1px solid #d1d5db",
   },
 
@@ -28,9 +31,10 @@ const headerStyles: Record<string, CSSProperties> = {
   },
 
   headerLogo: {
-    maxHeight: "6vh",
+    maxHeight: "8vh",
     width: "auto",
     display: "block",
+    paddingRight: "10px",
   },
 
   loginButton: {
@@ -45,11 +49,21 @@ const headerStyles: Record<string, CSSProperties> = {
     textDecoration: "none",
     cursor: "pointer",
   },
+  loginButtonHover: {
+    // backgroundColor: "#f7cc0d",
+    color: "#f7cc0d",
+    padding: "13px 23px",
+  },
 };
 
 
 
 function Header() {
+  // using usestate for managing different login hover effects
+ const [isHovered, setIsHovered] = useState(false);
+
+
+
   const location = useLocation();
 
   const targetPath = location.pathname === "/login" ? "/" : "/login";
@@ -57,11 +71,23 @@ function Header() {
   return (
     <>
       <nav style={headerStyles.header}>
-        <img src='umbc-logo.png' alt="UMBC Logo" style={headerStyles.headerLogo} />
-        <h1 style={headerStyles.headerTitle}>
-           Facilities Management
-        </h1>
-        <NavLink to={targetPath} style={headerStyles.loginButton}>{linkText}</NavLink>
+        {/* umbc-logo.png has a white background */}
+        {/* <img src='umbc-logo.png' alt="UMBC Logo" style={headerStyles.headerLogo} /> */}
+        {/* umbc_logo2 has a transparent bg*/}
+        <img src={umbc_logo2} alt="UMBC Logo" style={headerStyles.headerLogo} />
+        <h1 style={headerStyles.headerTitle}>Facilities Management Map</h1>
+        <NavLink 
+          to={targetPath}
+          
+          // turn on state when we hover
+          onMouseEnter={() => setIsHovered(true)}
+          // turn off state when we get off
+          onMouseOut={() => setIsHovered(false)}
+          style={{
+             ...headerStyles.loginButton, ...(isHovered? headerStyles.loginButtonHover : {})
+            }}
+        >{linkText}
+        </NavLink>
       </nav>
     </>
 
