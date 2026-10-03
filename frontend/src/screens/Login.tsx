@@ -1,9 +1,68 @@
 import * as React from "react";
+import type { CSSProperties } from 'react';
 import "./Login.css"
 import Header from  "../components/Header.tsx"
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import mapBG from "./mapBG.png";
 const API_URL = "http://localhost:8000";
+
+
+const loginStyles: Record<string, CSSProperties> = {
+  formWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    minWidth: "100vw",
+    // backgroundColor: "#ffffff",
+
+    backgroundImage: `url(${mapBG})`,
+    // backgroundSize: "cover",
+    backgroundPosition: "left",
+  },
+  form: {
+    backgroundColor: "#f3f4f6",
+    padding: "2.5rem",
+    paddingTop: ".2rem",
+    borderRadius: "12px",
+    border: "1px solid #f7cc0d",
+    width: "20%",
+  },
+  formTitle: {
+    color: "#000000",
+  },
+  formGroup: {
+    padding: "5px",
+  },
+  inputField: {
+    width: "100%",
+    padding: "8px",
+    boxSizing: "border-box",
+  },
+  buttonStyles: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "black",
+    color: "gold",
+    borderRadius: "6px",
+    cursor: "pointer",
+    width: "100%",
+    padding: "8px",
+    fontSize: "15px",
+    border: "none",
+  },
+  buttonStylesHover: {
+    background: "gold",
+    color: "black",
+  }
+
+};
+
+
+
 
 
 export default function Login () {
@@ -11,6 +70,9 @@ export default function Login () {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  // useState for login box hover
+  const [isLoginButtonHovered, setIsLoginButtonHovered] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent page refresh
     setError('');
@@ -43,30 +105,37 @@ export default function Login () {
   }
   return (
 
-    <div className="form-wrapper">
+    <div style={loginStyles.formWrapper}>
       <Header />
-      <form className="form" onSubmit={handleSubmit} >
-        <h1 className="form-title">LOGIN</h1>
-        <div className="form-group"> 
+      <form style={loginStyles.form} onSubmit={handleSubmit} >
+        <h1 style={loginStyles.formTitle}>LOGIN</h1>
+        <div style={loginStyles.formGroup}> 
           <label htmlFor="Email"> Email </label>
           <input 
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="input-field"
+            style={loginStyles.inputField}
             />
         </div>
-        <div className="form-group">
+        <div style={loginStyles.formGroup}>
           <label htmlFor="Password"> Password </label>
           <input 
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="input-field"
+            style={loginStyles.inputField}
           />
         </div>
-        <button>Submit</button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        <div style={loginStyles.formGroup}>
+          <p>Don't have an account? <a href="/register">Register</a></p>
+
+        </div>
+        <button 
+        onMouseOver={() => setIsLoginButtonHovered(true)}
+        onMouseOut={() => setIsLoginButtonHovered(false)}
+        style={{ ...loginStyles.buttonStyles, ...(isLoginButtonHovered ? loginStyles.buttonStylesHover : {}) }}>Submit</button>
+        {error && <p style={{ color: "red", border: "1px solid blue" }}>{error}</p>}
       </form>
     </div>
   )
