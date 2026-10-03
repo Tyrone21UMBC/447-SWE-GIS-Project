@@ -45,7 +45,7 @@ const loginStyles: Record<string, CSSProperties> = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    background: "black",
+    backgroundColor: "black",
     color: "gold",
     borderRadius: "6px",
     cursor: "pointer",
@@ -55,9 +55,14 @@ const loginStyles: Record<string, CSSProperties> = {
     border: "none",
   },
   buttonStylesHover: {
-    background: "gold",
-    color: "black",
-  }
+    // background: "gold",
+    // color: "black",
+    backgroundColor: "#444",
+    color: "gold",
+  },
+  smallerText: {
+    fontSize: "14px",
+  },
 
 };
 
@@ -127,15 +132,15 @@ export default function Login () {
             style={loginStyles.inputField}
           />
         </div>
-        <div style={loginStyles.formGroup}>
-          <p>Don't have an account? <a href="/register">Register</a></p>
+        <div style={{ ...loginStyles.formGroup, ...loginStyles.smallerText }}>
+          <p>Don't have an account? <a href="/register">Register here</a></p>
 
         </div>
         <button 
         onMouseOver={() => setIsLoginButtonHovered(true)}
         onMouseOut={() => setIsLoginButtonHovered(false)}
         style={{ ...loginStyles.buttonStyles, ...(isLoginButtonHovered ? loginStyles.buttonStylesHover : {}) }}>Submit</button>
-        {error && <p style={{ color: "red", border: "1px solid blue" }}>{error}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
     </div>
   )
