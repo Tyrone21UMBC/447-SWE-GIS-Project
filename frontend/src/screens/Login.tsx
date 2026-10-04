@@ -4,7 +4,7 @@ import "./Login.css"
 import Header from  "../components/Header.tsx"
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import mapBG from "./mapBG.png";
+import mapBG from "../../public/mapBG.png";
 const API_URL = "http://localhost:8000";
 
 
@@ -78,7 +78,7 @@ export default function Login () {
   const navigate = useNavigate();
   // useState for login box hover
   const [isLoginButtonHovered, setIsLoginButtonHovered] = useState(false);
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent page refresh
     setError('');
@@ -102,6 +102,7 @@ export default function Login () {
      }
      const data = await res.json();
      console.log("Logged in as ", data.username);
+     localStorage.setItem("user", JSON.stringify({id: data.user_id, username: data.username }));
      navigate("/"); //success: go to the application
 
     } catch {
