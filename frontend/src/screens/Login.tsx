@@ -28,7 +28,8 @@ const loginStyles: Record<string, CSSProperties> = {
     paddingTop: ".2rem",
     borderRadius: "12px",
     border: "1px solid #f7cc0d",
-    width: "20%",
+    width: "25%",
+    height: "fit-content",
   },
   formTitle: {
     color: "#000000",
@@ -47,7 +48,7 @@ const loginStyles: Record<string, CSSProperties> = {
     alignItems: "center",
     backgroundColor: "black",
     color: "gold",
-    borderRadius: "6px",
+    borderRadius: "9999px",
     cursor: "pointer",
     width: "100%",
     padding: "8px",
