@@ -83,22 +83,52 @@ const headerStyles: Record<string, CSSProperties> = {
     border: "2px solid transparent",
   },
 };
+const screenIDStyling:Record<string, CSSProperties> = {
+  button: {
+    textDecoration: "none",
+    backgroundColor: "#000",
+    color: "#f7cc0d",
+    border: "2px solid #000",
+    padding: "10px 20px",
+    borderRadius: "9999px"
+  },
+  buttonHover: {
+    backgroundColor: "#333",
+    color: "#f7cc0d",
+    border: "2px solid transparent",
+  },
+
+};
 
 
 
-function Header() {
+function Header({ screenID }) {
   // using usestate for managing different login hover effects
  const [isHovered, setIsHovered] = useState(false);
  const [isHoveredLink1, setIsHoveredLink1] = useState(false);
  const [isHoveredLink2, setIsHoveredLink2] = useState(false);
  const [isHoveredLink3, setIsHoveredLink3] = useState(false);
+//  const baseStyle = screenID === "contact" ? screenIDStyling.button : headerStyles.headerTabs;
+//  const hoverStyle = screenID === "contact" ? screenIDStyling.buttonHover : headerStyles.headerTabsHover;
+
+//   const computedLink1Style = {
+//     ...baseStyle,
+//     ...(isHoveredLink1 ? hoverStyle : {})
+//   };
 
 
 
   const location = useLocation();
 
-  const targetPath = location.pathname === "/login" ? "/" : "/login";
-  const linkText = location.pathname === "/login" ? "Home" : "Login";
+  const targetPath1 = location.pathname === "/login" ? "/" : "/login";
+  const linkText1 = location.pathname === "/login" ? "Home" : "Login";
+  const targetPath2 = location.pathname === "/contact" ? "/" : "/contact";
+  const linkText2 = location.pathname === "/contact" ? "Contact" : "Contact";
+  const targetPath3 = location.pathname === "/reports" ? "/" : "/reports";
+  const linkText3 = location.pathname === "/reports" ? "Reports" : "Reports";
+  const targetPath4 = location.pathname === "/admin" ? "/" : "/admin";
+  const linkText4 = location.pathname === "/admin" ? "Admin" : "Admin";
+
   return (
     <>
 
@@ -111,14 +141,33 @@ function Header() {
 
 
             <div style={headerStyles.headerLinks}>
-                <NavLink to={targetPath} style={{ ...headerStyles.headerTabs, ...(isHoveredLink1? headerStyles.headerTabsHover : {} ) }} onMouseEnter={() => setIsHoveredLink1(true)} onMouseOut={() => setIsHoveredLink1(false)}>
-                    Contact
+                <NavLink to={targetPath2} 
+                  style={
+                    screenID === "contact"
+                      ? { ...screenIDStyling.button, ...(isHoveredLink1 ? screenIDStyling.buttonHover : {}) }
+                      : { ...headerStyles.headerTabs, ...(isHoveredLink1 ? headerStyles.headerTabsHover : {}) }}
+                
+                    onMouseEnter={() => setIsHoveredLink1(true)} onMouseOut={() => setIsHoveredLink1(false)}
+                >
+                    {linkText2}
                 </NavLink>
-                <NavLink to={targetPath} style={{ ...headerStyles.headerTabs, ...(isHoveredLink2? headerStyles.headerTabsHover : {} ) }} onMouseEnter={() => setIsHoveredLink2(true)} onMouseOut={() => setIsHoveredLink2(false)}>
-                    Reports
+                <NavLink to={targetPath3} 
+                  style={
+                    screenID === "reports"
+                      ? { ...screenIDStyling.button, ...(isHoveredLink2 ? screenIDStyling.buttonHover : {}) }
+                      : { ...headerStyles.headerTabs, ...(isHoveredLink2 ? headerStyles.headerTabsHover : {}) }}
+                
+                    onMouseEnter={() => setIsHoveredLink2(true)} onMouseOut={() => setIsHoveredLink2(false)}>
+                    {linkText3}
                 </NavLink>
-                <NavLink to={targetPath} style={{ ...headerStyles.headerTabs, ...(isHoveredLink3? headerStyles.headerTabsHover : {} ) }} onMouseEnter={() => setIsHoveredLink3(true)} onMouseOut={() => setIsHoveredLink3(false)}>
-                    Admin
+                <NavLink to={targetPath4} 
+                  style={
+                    screenID === "admin"
+                      ? { ...screenIDStyling.button, ...(isHoveredLink3 ? screenIDStyling.buttonHover : {}) }
+                      : { ...headerStyles.headerTabs, ...(isHoveredLink3 ? headerStyles.headerTabsHover : {}) }}
+                
+                    onMouseEnter={() => setIsHoveredLink3(true)} onMouseOut={() => setIsHoveredLink3(false)}>
+                    {linkText4}
                 </NavLink>
             </div>
 
@@ -126,7 +175,7 @@ function Header() {
 
             <div style={headerStyles.loginContainer}>
                 <NavLink 
-                to={targetPath}
+                to={targetPath1}
                 
                 // turn on state when we hover
                 onMouseEnter={() => setIsHovered(true)}
@@ -135,7 +184,7 @@ function Header() {
                 style={{
                     ...headerStyles.loginButton, ...(isHovered? headerStyles.loginButtonHover : {})
                     }}
-                >{linkText}
+                >{linkText1}
                 </NavLink>
             </div>
         </nav>
