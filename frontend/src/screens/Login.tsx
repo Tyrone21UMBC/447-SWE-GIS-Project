@@ -16,9 +16,9 @@ const loginStyles: Record<string, CSSProperties> = {
     alignItems: "center",
     minHeight: "100vh",
     minWidth: "100vw",
-    // backgroundColor: "#ffffff",
+    backgroundColor: "#d1d5db",
 
-    backgroundImage: `url(${mapBG})`,
+    // backgroundImage: `url(${mapBG})`,
     // backgroundSize: "cover",
     backgroundPosition: "left",
   },

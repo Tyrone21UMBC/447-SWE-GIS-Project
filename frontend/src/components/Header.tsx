@@ -23,7 +23,7 @@ const headerStyles: Record<string, CSSProperties> = {
     boxSizing: "border-box",
     // backgroundColor: "#dfc861",
     backgroundColor: "#f7cc0d",
-    borderBottom: "5px solid #d1d5db",
+    // borderBottom: "5px solid #d1d5db",
     
   },
 
