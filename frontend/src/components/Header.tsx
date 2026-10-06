@@ -41,11 +41,11 @@ const headerStyles: Record<string, CSSProperties> = {
     marginLeft: "auto",
     display: "inline-flex",
     alignItems: "center",
-    padding: "10px 20px",
+    padding: "5px 10px",
     // color: "#ffffff",
     color: "#f7cc0d",
     backgroundColor: "#000000",
-    borderRadius: "9999px",
+    borderRadius: "10px",
     fontSize: "16px",
     textDecoration: "none",
     cursor: "pointer",
@@ -74,8 +74,8 @@ const headerStyles: Record<string, CSSProperties> = {
     textDecoration: "none",
     border: "2px solid #000",
     color: "#000",
-    padding: "10px 20px",
-    borderRadius: "9999px"
+    padding: "5px 10px",
+    borderRadius: "10px"
   },
   headerTabsHover: {
     backgroundColor: "#000",
@@ -90,7 +90,7 @@ const screenIDStyling:Record<string, CSSProperties> = {
     color: "#f7cc0d",
     border: "2px solid #000",
     padding: "10px 20px",
-    borderRadius: "9999px"
+    borderRadius: "10px"
   },
   buttonHover: {
     backgroundColor: "#333",
@@ -102,20 +102,12 @@ const screenIDStyling:Record<string, CSSProperties> = {
 
 
 
-function Header({ screenID }) {
+function Header({ screenID="" }) {
   // using usestate for managing different login hover effects
  const [isHovered, setIsHovered] = useState(false);
  const [isHoveredLink1, setIsHoveredLink1] = useState(false);
  const [isHoveredLink2, setIsHoveredLink2] = useState(false);
  const [isHoveredLink3, setIsHoveredLink3] = useState(false);
-//  const baseStyle = screenID === "contact" ? screenIDStyling.button : headerStyles.headerTabs;
-//  const hoverStyle = screenID === "contact" ? screenIDStyling.buttonHover : headerStyles.headerTabsHover;
-
-//   const computedLink1Style = {
-//     ...baseStyle,
-//     ...(isHoveredLink1 ? hoverStyle : {})
-//   };
-
 
 
   const location = useLocation();
