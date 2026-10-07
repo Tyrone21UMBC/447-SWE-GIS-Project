@@ -23,6 +23,7 @@ const headerStyles: Record<string, CSSProperties> = {
     boxSizing: "border-box",
     // backgroundColor: "#dfc861",
     backgroundColor: "#f7cc0d",
+    cursor: "pointer",
     // borderBottom: "5px solid #d1d5db",
     
   },
@@ -132,7 +133,7 @@ function Header({ screenID="" }) {
     <>
 
         <nav style={headerStyles.header}>
-            <div style={headerStyles.logoContainer}>
+            <div style={headerStyles.logoContainer} onClick={() => navigate("/")}>
                 <img src={umbc_logo2} alt="UMBC Logo" style={headerStyles.headerLogo} />
                 <h1 style={headerStyles.headerTitle}>Facilities Management System</h1>
             </div>
