@@ -1,5 +1,5 @@
 import "./Header.css"
-import { NavLink, useLocation } from "react-router"
+import { NavLink, useLocation, useNavigate } from "react-router"
 import type { CSSProperties } from "react";
 import umbc_logo2 from "./umbc_logo_with_words.png";
 import React, { useState } from 'react';
@@ -104,10 +104,10 @@ const screenIDStyling:Record<string, CSSProperties> = {
 
 function Header({ screenID="" }) {
   // using usestate for managing different login hover effects
- const [isHovered, setIsHovered] = useState(false);
- const [isHoveredLink1, setIsHoveredLink1] = useState(false);
- const [isHoveredLink2, setIsHoveredLink2] = useState(false);
- const [isHoveredLink3, setIsHoveredLink3] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isHoveredLink1, setIsHoveredLink1] = useState(false);
+  const [isHoveredLink2, setIsHoveredLink2] = useState(false);
+  const [isHoveredLink3, setIsHoveredLink3] = useState(false);
 
 
   const location = useLocation();
@@ -121,6 +121,13 @@ function Header({ screenID="" }) {
   const targetPath4 = location.pathname === "/admin" ? "/" : "/admin";
   const linkText4 = location.pathname === "/admin" ? "Admin" : "Admin";
 
+  const stored = localStorage.getItem("user")
+  const isLoggedIn = stored !== null;
+  const navigate = useNavigate();
+  function handleLogout() {
+    localStorage.removeItem("user");
+    navigate("/");
+  }
   return (
     <>
 
@@ -131,7 +138,8 @@ function Header({ screenID="" }) {
             </div>
 
 
-
+            {isLoggedIn ? (
+              <>
             <div style={headerStyles.headerLinks}>
                 <NavLink to={targetPath2} 
                   style={
@@ -161,29 +169,37 @@ function Header({ screenID="" }) {
                     onMouseEnter={() => setIsHoveredLink3(true)} onMouseOut={() => setIsHoveredLink3(false)}>
                     {linkText4}
                 </NavLink>
-            </div>
-
-
-
-            <div style={headerStyles.loginContainer}>
-                <NavLink 
-                to={targetPath1}
+              </div>
+              <div style={headerStyles.loginContainer}>
+                <button
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseOut={() => setIsHovered(false)}
+                  style={{
+                      ...headerStyles.loginButton, ...(isHovered? headerStyles.loginButtonHover : {})
+                  }}
+                  onClick={handleLogout}
+                  >Logout
+                </button>
+              </div>
+              </>
+            ) : (
+              <div style={headerStyles.loginContainer}>
+                  <NavLink 
+                  to={targetPath1}
                 
-                // turn on state when we hover
-                onMouseEnter={() => setIsHovered(true)}
-                // turn off state when we get off
-                onMouseOut={() => setIsHovered(false)}
-                style={{
-                    ...headerStyles.loginButton, ...(isHovered? headerStyles.loginButtonHover : {})
-                    }}
-                >{linkText1}
-                </NavLink>
+                  // turn on state when we hover
+                  onMouseEnter={() => setIsHovered(true)}
+                  // turn off state when we get off
+                  onMouseOut={() => setIsHovered(false)}
+                  style={{
+                      ...headerStyles.loginButton, ...(isHovered? headerStyles.loginButtonHover : {})
+                  }}
+                  >{linkText1}
+                  </NavLink>
             </div>
+            )}
         </nav>
-
-
     </>
-
   )
 }
 

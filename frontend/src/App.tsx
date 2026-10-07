@@ -36,7 +36,7 @@ const appStyles: CSSProperties = {
 function App() {
   // 2. Added ref to grab the arcgis-map DOM node safely
   const mapRef = useRef<any>(null);
-
+  
   // 3. Added useEffect hook to manage layer visibility configurations on map load
   useEffect(() => {
     const mapElement = mapRef.current;
