@@ -1,22 +1,19 @@
-from pydantic import BaseModel, EmailStr
-
-
-
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 class UserCreate(BaseModel):
     username: str
-    email: EmailStr
+    email: EmailStr = Field(pattern=r".+@umbc\.edu")
     password: str
+    
 
 
 class UserResponse(BaseModel):
     id: int
     username: str
-    email: EmailStr
-
+    email: EmailStr = Field(pattern=r".+@umbc\.edu")
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    email: EmailStr  = Field(pattern=r".+@umbc\.edu")
     password: str
 
 class FormSubmit(BaseModel):
