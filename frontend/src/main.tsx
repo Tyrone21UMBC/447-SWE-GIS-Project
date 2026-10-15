@@ -8,6 +8,7 @@ import Login from './screens/Login.tsx'
 import Contact from './screens/Contact.tsx'
 import Reports from './screens/Reports.tsx'
 import Admin from './screens/Admin.tsx'
+import InvalidUser from './screens/InvalidUser.tsx';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/contact" element={<Contact />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/invaliduser" element={<InvalidUser />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
