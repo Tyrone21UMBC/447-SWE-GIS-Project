@@ -1,0 +1,14 @@
+{
+  "id": "session-1792171638818",
+  "startedAt": "2026-10-16T17:27:18.818Z",
+  "cwd": "/home/tejast/Documents/Projects/UMBC_Map",
+  "context": {},
+  "metrics": {
+    "edits": 0,
+    "commands": 0,
+    "tasks": 0,
+    "errors": 0
+  },
+  "endedAt": "2026-10-16T17:27:29.030Z",
+  "duration": 10213
+}
