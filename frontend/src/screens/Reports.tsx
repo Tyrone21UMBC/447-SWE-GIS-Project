@@ -74,13 +74,20 @@ function Reports(){
                   <h2>Welcome to Reports.</h2>
                   <p>This is the Reports page.</p>
               </div>
-
               <div style={reportsStyles.reportsContent}>
-                  <h2>This is some content.</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia hic facilis, dignissimos excepturi alias aliquam. Rem aliquam vitae magnam id?</p>
                   <button onClick={usePdfFiller}>
                     Check Form Data
                   </button>
+                  <iframe
+                    src="../../public/CBLP BMP Checklists_v7_Verification_022023.pdf"
+                    title="BMP Checklist"
+                    width="80%"
+                    height="800px"
+                    style={{
+                      border: "1px solid #ccc",
+                      borderRadius: "8px",
+                    }}
+                  />
               </div>
           </div>
       </div>
@@ -93,14 +100,15 @@ const reportsStyles:Record <string, CSSProperties> = {
     reportsContainer: {
         marginTop: "10vh",
         display: "flex",
+        flexDirection: "column",
     },
     reportsNav: {
-        backgroundColor: "#FF9d00",
+        backgroundColor: "FF0000",
         color: "#0070AF",
         border: "2px solid #000",
     },
     reportsContent: {
-        backgroundColor: "#FF5000",
+        backgroundColor: "#FFFFFF",
     },
 };
 
