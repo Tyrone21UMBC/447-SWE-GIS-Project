@@ -20,6 +20,9 @@ importers:
       pdf-lib:
         specifier: ^1.17.1
         version: 1.17.1
+      pdfjs-dist:
+        specifier: 6.3.289
+        version: 6.3.289
       react:
         specifier: ^19.2.8
         version: 19.3.0
@@ -71,6 +74,7 @@ packages:
 
   '@arcgis/core@5.1.24':
     resolution: {integrity: sha512-cj0dcCjya+YwPneJH3aE6c4/FYIE7WwDyb0yZaMnJQLsAgTxcMgk+7ESKLNI+0ITh56LEagRZ42ryqEf5+Yn9w==}
+    deprecated: This version is no longer supported. Upgrade to @latest
 
   '@arcgis/lumina@5.1.24':
     resolution: {integrity: sha512-jJUhJgU00h92wuG/3mwkSDsDrf7qUlvnhObJOu35P3kBwGZA9Sitqr9iG3BuOmIBcsiBVUuDHAfoXrDjka2DCQ==}
@@ -83,6 +87,7 @@ packages:
 
   '@arcgis/map-components@5.1.24':
     resolution: {integrity: sha512-qB1/00TWyEW2V9d3Vj8MI69pIUtYhYUX/5w4cXK4PZ6SAZM/fUcrJJSRMRaEX/czun0aJqSJIrr8edHCObRuFg==}
+    deprecated: This version is no longer supported. Upgrade to @latest
     peerDependencies:
       '@arcgis/core': ^5.1.0
       '@esri/calcite-components': ^5.1.1

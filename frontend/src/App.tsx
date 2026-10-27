@@ -23,6 +23,7 @@ import type { CSSProperties } from "react";
 
 // UMBC Stormwater Design & Construction Base Map (public web map, ArcGIS Online).
 const WEB_MAP_ITEM_ID = '697b78c682614eee9fc1e94c1c5a9af5'
+const UMBC_VIEW = { center: [-76.7115, 39.2555], scale: 9000 };
 
 // Stylesheets format for styles
 // Styling objects as opposed to styling files 
@@ -59,6 +60,9 @@ function App() {
       const view = mapElement.view;
 
       if (view && view.map) {
+        // Web map's saved extent is too wide; start centered on campus
+        view.goTo(UMBC_VIEW, { animate: false });
+
         view.map.layers.forEach((layer: any) => {
           if (layer.title === "Layers - BMP Database") {
             layer.visible = true;

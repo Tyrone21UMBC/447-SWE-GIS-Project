@@ -1,4 +1,5 @@
 import Header from "../components/Header.tsx";
+import PdfViewer from "../components/PdfViewer.tsx";
 import type { CSSProperties } from 'react';
 import { useLocation } from 'react-router';
 import { PDFDocument } from 'pdf-lib';
@@ -52,7 +53,8 @@ export type FormData = {
 
 function Reports(){
   const location = useLocation();
-  const data = location.state as FormData | null;
+  // App navigates with { state: { bmp: selectedBMP } }
+  const data = (location.state as { bmp?: FormData } | null)?.bmp ?? null;
 
   const usePdfFiller = () => {
     console.log(data);
@@ -70,23 +72,13 @@ function Reports(){
                   `}
 
               </style>
-              <div className="something" style={reportsStyles.reportsNav}>
-                  <h2>Welcome to Reports.</h2>
-                  <p>This is the Reports page.</p>
-              </div>
-              <div style={reportsStyles.reportsContent}>
+                <div style={reportsStyles.reportsContent}>
                   <button onClick={usePdfFiller}>
                     Check Form Data
                   </button>
-                  <iframe
-                    src="../../public/CBLP BMP Checklists_v7_Verification_022023.pdf"
-                    title="BMP Checklist"
-                    width="80%"
-                    height="800px"
-                    style={{
-                      border: "1px solid #ccc",
-                      borderRadius: "8px",
-                    }}
+                  <PdfViewer
+                    file="/CBLP BMP Checklists_v7_Verification_022023.pdf"
+                    data={data}
                   />
               </div>
           </div>

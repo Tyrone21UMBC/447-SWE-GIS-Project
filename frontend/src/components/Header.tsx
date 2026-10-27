@@ -1,7 +1,7 @@
 import "./Header.css"
 import { NavLink, useLocation, useNavigate } from "react-router"
 import type { CSSProperties } from "react";
-import umbc_logo2 from "./umbc_logo_with_words.png";
+import umbc_logo2 from "../../public/umbc_logo_with_words.png";
 import React, { useState } from 'react';
 
 
