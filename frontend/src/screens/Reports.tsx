@@ -34,6 +34,7 @@ function Reports(){
                     file="/CBLP BMP Checklists_v7_Verification_022023.pdf"
                     data={data}
                   />
+                  <button style={reportsStyles.submitButton}>Submit Report</button>
               </div>
           </div>
       </div>
@@ -47,6 +48,8 @@ const reportsStyles:Record <string, CSSProperties> = {
         marginTop: "10vh",
         display: "flex",
         flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
     },
     reportsNav: {
         backgroundColor: "FF0000",
@@ -55,7 +58,20 @@ const reportsStyles:Record <string, CSSProperties> = {
     },
     reportsContent: {
         backgroundColor: "#FFFFFF",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
     },
+    submitButton: {
+      color: "#000000",
+      backgroundColor: "gold",
+      marginBottom: "10px",
+      borderRadius: "5px",
+      fontSize: "15px",
+      padding: "5px",
+      cursor: "pointer",
+    }
 };
 
 export default Reports;
