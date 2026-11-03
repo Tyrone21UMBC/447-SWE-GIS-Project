@@ -5,20 +5,21 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import './index.css'
 import App from './App.tsx'
 import Login from './screens/Login.tsx'
+import Register from './screens/Register.tsx'
 import Contact from './screens/Contact.tsx'
 import Reports from './screens/Reports.tsx'
 import Admin from './screens/Admin.tsx'
-import InvalidUser from './screens/InvalidUser.tsx';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/reports/:bmpId" element={<Reports />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/invaliduser" element={<InvalidUser />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

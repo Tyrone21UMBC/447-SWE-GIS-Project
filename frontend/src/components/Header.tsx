@@ -122,8 +122,6 @@ function Header({ screenID="" }) {
   const linkText3 = location.pathname === "/reports" ? "Reports" : "Reports";
   const targetPath4 = location.pathname === "/admin" ? "/" : "/admin";
   const linkText4 = location.pathname === "/admin" ? "Admin" : "Admin";
-  const targetPath5 = location.pathname === "/invaliduser" ? "/" : "/invaliduser";
-  const linkText5 = location.pathname === "/invaliduser" ? "Contact" : "Home";
 
   const stored = localStorage.getItem("user")
   const isLoggedIn = stored !== null;
@@ -172,15 +170,6 @@ function Header({ screenID="" }) {
                 
                     onMouseEnter={() => setIsHoveredLink3(true)} onMouseOut={() => setIsHoveredLink3(false)}>
                     {linkText4}
-                </NavLink>
-                <NavLink to={targetPath5} 
-                  style={
-                    screenID === "invaliduser"
-                      ? { ...screenIDStyling.button, ...(isHoveredLink4 ? screenIDStyling.buttonHover : {}) }
-                      : { ...headerStyles.headerTabs, ...(isHoveredLink4 ? headerStyles.headerTabsHover : {}) }}
-                
-                    onMouseEnter={() => setIsHoveredLink4(true)} onMouseOut={() => setIsHoveredLink4(false)}>
-                    {linkText5}
                 </NavLink>
               </div>
               <div style={headerStyles.loginContainer}>
