@@ -34,7 +34,7 @@ function InvalidUser(){
             `}          
           </style>
           <div className="refer-to-contacts-box" style={invalidStyles.issueNav}>
-              <h1>Error: Invalid Account</h1>
+              <center><h1>Error: Invalid Account</h1></center>
               <p>The account you attempted to login with is invalid because it was not a verified account by one of the administrators. </p>
               <p>If you believe that this is an issue, please contact one of the admins in order to review your account before trying again.</p>
           </div>
