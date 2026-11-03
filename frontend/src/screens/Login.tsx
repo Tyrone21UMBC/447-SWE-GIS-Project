@@ -8,7 +8,7 @@ import mapBG from "../../public/mapBG.png";
 const API_URL = "http://localhost:8000";
 
 
-const loginStyles: Record<string, CSSProperties> = {
+export const loginStyles: Record<string, CSSProperties> = {
   formWrapper: {
     display: "flex",
     flexDirection: "column",
@@ -97,7 +97,12 @@ export default function Login () {
 
      if (!res.ok) {
       const err = await res.json();
-      setError(err.detail ?? "Login failed");
+      // FastAPI sends a string for HTTPException, but a list of objects for 422 validation errors
+      if (res.status === 422) {
+        setError("Please use your @umbc.edu email address.");
+      } else {
+        setError(typeof err.detail === "string" ? err.detail : "Login failed");
+      }
       return;
      }
      const data = await res.json();
