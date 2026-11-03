@@ -34,14 +34,12 @@ function Reports(){
                     file="/CBLP BMP Checklists_v7_Verification_022023.pdf"
                     data={data}
                   />
-                  <button style={reportsStyles.submitButton}>Submit Report</button>
+                  <button style={reportsStyles.submitButton} onClick={sendPDF}>Submit Report</button>
               </div>
           </div>
       </div>
   );
 }
-
-
 
 const reportsStyles:Record <string, CSSProperties> = {
     reportsContainer: {
