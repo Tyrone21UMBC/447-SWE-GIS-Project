@@ -56,5 +56,4 @@ const contactStyles:Record <string, CSSProperties> = {
 
 };
 
-
 export default Contact;
