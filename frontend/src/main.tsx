@@ -1,17 +1,20 @@
 // import * as React from "react";
-import { StrictMode } from 'react';
+import { StrictMode, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from "react-router";
 import './index.css'
-import App from './App.tsx'
-import Login from './screens/Login.tsx'
-import Register from './screens/Register.tsx'
-import Contact from './screens/Contact.tsx'
-import Reports from './screens/Reports.tsx'
-import Admin from './screens/Admin.tsx'
+// Each screen is loaded only when its route is visited, so the map page doesn't
+// download the PDF libraries and the login page doesn't download ArcGIS
+const App = lazy(() => import('./App.tsx'))
+const Login = lazy(() => import('./screens/Login.tsx'))
+const Register = lazy(() => import('./screens/Register.tsx'))
+const Contact = lazy(() => import('./screens/Contact.tsx'))
+const Reports = lazy(() => import('./screens/Reports.tsx'))
+const Admin = lazy(() => import('./screens/Admin.tsx'))
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
+      <Suspense fallback={null}>
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
@@ -21,6 +24,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/reports/:bmpId" element={<Reports />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   </StrictMode>,
 )

@@ -18,15 +18,34 @@ import '@arcgis/map-components/dist/components/arcgis-basemap-toggle';
 import Header from './components/Header'
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer.js'
 import Graphic from '@arcgis/core/Graphic.js'
+import Extent from '@arcgis/core/geometry/Extent.js'
+import Basemap from '@arcgis/core/Basemap.js'
+import LocalBasemapsSource from '@arcgis/core/widgets/BasemapGallery/support/LocalBasemapsSource.js'
 import { BMP_RECORDS, type BmpRecord } from './data/bmpMaster.ts'
 import './App.css'
 
 // import for the CSS styling format
 import type { CSSProperties } from "react";
 
-// UMBC Stormwater Design & Construction Base Map (public web map, ArcGIS Online).
-const WEB_MAP_ITEM_ID = '697b78c682614eee9fc1e94c1c5a9af5'
-const UMBC_VIEW = { center: [-76.7115, 39.2555], scale: 9000 };
+// No web map: its layers were all hidden anyway, and loading it cost ~20 extra requests.
+// (UMBC Stormwater Design & Construction Base Map, item 697b78c682614eee9fc1e94c1c5a9af5)
+const UMBC_CENTER = '-76.7115,39.2555';
+const UMBC_SCALE = 9000;
+// Keep the view on campus: panning stops at the edge of our BMPs plus a margin,
+// and zooming out stops at about the whole campus
+const CAMPUS_EXTENT = (() => {
+  const pts = BMP_RECORDS.filter(r => r.lat !== null && r.lon !== null);
+  const pad = 0.002;   // degrees, ~200 m
+  return new Extent({
+    xmin: Math.min(...pts.map(r => r.lon!)) - pad, xmax: Math.max(...pts.map(r => r.lon!)) + pad,
+    ymin: Math.min(...pts.map(r => r.lat!)) - pad, ymax: Math.max(...pts.map(r => r.lat!)) + pad,
+    spatialReference: { wkid: 4326 },
+  });
+})();
+// A short basemap list: the default gallery downloads all ~35 Esri basemaps (~1.5 MB) on load
+const BASEMAPS = new LocalBasemapsSource({
+  basemaps: ['streets-night-vector', 'satellite', 'hybrid', 'topo-vector', 'gray-vector'].map(id => Basemap.fromId(id)!),
+});
 const BMP_OUTLINE_LAYER_ID = 'umbc-bmp-outlines';
 const BMP_POINT_LAYER_ID = 'umbc-bmp-points';
 
@@ -119,15 +138,9 @@ function App() {
       const view = mapElement.view;
 
       if (view && view.map) {
-        // Web map's saved extent is too wide; start centered on campus
-        view.goTo(UMBC_VIEW, { animate: false });
+        view.constraints = { geometry: CAMPUS_EXTENT, minScale: 20000, maxScale: 500, rotationEnabled: false };
 
-        // Hide every web map layer, including its BMP Database
         const ourLayers = [BMP_OUTLINE_LAYER_ID, BMP_POINT_LAYER_ID];
-        view.map.layers.forEach((layer: any) => {
-          if (!ourLayers.includes(layer.id)) layer.visible = false;
-        });
-
         if (!view.map.findLayerById(BMP_OUTLINE_LAYER_ID)) {
           view.map.addMany(createBmpLayers());
         }
@@ -171,14 +184,14 @@ function App() {
 
           {/* 4. Added ref={mapRef} right here into your arcgis-map tag */}
           {/* <arcgis-map ref={mapRef} item-id={WEB_MAP_ITEM_ID} style={appStyles} basemap="arcgis/navigation-night"> */}
-          <arcgis-map ref={mapRef} item-id={WEB_MAP_ITEM_ID} style={appStyles} basemap="streets-night-vector">
+          <arcgis-map ref={mapRef} style={appStyles} basemap="streets-night-vector" center={UMBC_CENTER} scale={UMBC_SCALE}>
             <arcgis-zoom slot="top-left"></arcgis-zoom>
             {/*<arcgis-home slot="top-left"></arcgis-home>}
             <arcgis-search slot="top-right"></arcgis-search>
             
             {/* The Basemap Gallery filter hidden inside an expand button */}
             <arcgis-expand slot="top-right">
-              <arcgis-basemap-gallery></arcgis-basemap-gallery>
+              <arcgis-basemap-gallery source={BASEMAPS}></arcgis-basemap-gallery>
             </arcgis-expand>
 
             <arcgis-expand slot="top-right">

@@ -21,3 +21,7 @@ class FormSubmit(BaseModel):
     title: str
     location: str
     description: str
+
+class ReportUpload(BaseModel):
+    filename: str = Field(pattern=r"^[\w.\-]{1,120}\.pdf$")
+    pdf: str = Field(max_length=14_000_000)   # base64, ~10 MB PDF
