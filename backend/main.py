@@ -6,12 +6,16 @@ import urllib.error
 import urllib.request
 
 from fastapi import FastAPI, Depends, HTTPException
-from security import hash_password, verify_password
-from models import User
-from schema import UserCreate, UserResponse, UserLogin, ReportUpload
+from security import hash_password, require_admin, verify_password
+from models import User, LoginSession
+from schema import UserCreate, UserResponse, UserLogin, ReportUpload, Token
 from database import get_db, engine, Base
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from auth import create_session, get_current_user, hash_token, oauth2_scheme
+from routers import users
+
+
 
 app = FastAPI()
 
@@ -23,6 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(users.router)
 
 Base.metadata.create_all(bind=engine)
 
@@ -58,11 +63,11 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 # View users
 @app.get("/users", response_model=list[UserResponse])
-def get_users(db: Session = Depends(get_db)):
+def get_users(db: Session = Depends(get_db), admin: User = Depends(require_admin)):
     return db.query(User).all()
 
 # Log In verification
-@app.post("/login")
+@app.post("/login", response_model=Token)
 def login(user: UserLogin, db: Session = Depends(get_db)):
     
     db_user = db.query(User).filter(User.email == user.email).first()
@@ -77,15 +82,21 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
                 status_code=401,
                 detail="Invalid email or password"
         )
+    token = create_session(db, db_user.id)
     return {
-            "message": "Login successfull!",
-            "user_id": db_user.id,
+            "access_token": token,
+            "token_type": "bearer",
+            "role": db_user.role,
             "username": db_user.username
     }
+@app.post("/logout", status_code=204)
+def logout(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    db.query(LoginSession).filter(LoginSession.token_hash == hash_token(token)).delete()
+    db.commit()
 
 # Save a submitted report PDF to Google Drive
 @app.post("/reports")
-def upload_report(report: ReportUpload):
+def upload_report(report: ReportUpload, user: User = Depends(get_current_user)):
     if not APPS_SCRIPT_URL or not APPS_SCRIPT_SECRET:
         raise HTTPException(status_code=500, detail="Report upload is not configured")
 

@@ -31,6 +31,7 @@ Our software is split into 2 main categories. We have:
 - Backend
   - We are using Fast Aplication Programming Interface, or better known as FastAPI, as our backend application. More specifically, we're using the RestAPI architectural style.
   - We're using SQL as our DB type and using SQLAlchemy to manage database creation and relationships.
+  - Authentication uses opaque (reference) tokens rather than JWTs. On login the server generates a random token, stores a SHA-256 hash of it in a sessions table with an expiry, and returns the raw token to the browser. Every protected request sends it as `Authorization: Bearer <token>`; the server hashes it again and looks it up. Tokens carry no user data, so an intercepted one leaks nothing, and logging out deletes the row, which revokes it instantly. Authorization is role-based (`ADMIN`, `STAFF`, `VISITOR`) and enforced on the server for each endpoint.
 
 ## Software and Hardware dependencies and prerequisites
 There are some software and hardware requirements that would be ideal to run and/or make modifications to our software
