@@ -2,7 +2,9 @@
 // report is a flat PDF that looks like the form filled in by hand.
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import type { PDFFont, PDFPage } from 'pdf-lib';
+import type { PDFDocument as Doc } from 'pdf-lib';
 import type { OverlayField, Values } from './PdfViewer.tsx';
+import type { Photo } from './photos.ts';
 
 const INK = rgb(0, 0.2, 0.55);     // dark blue, stands out from the printed form
 const TEXT_SIZE = 9;
@@ -73,7 +75,45 @@ function drawMark(page: PDFPage, font: PDFFont, f: OverlayField) {
   page.drawText('X', { x, y, size, font, color: INK });
 }
 
-export async function buildFilledPdf(file: string, fields: OverlayField[], values: Values) {
+const MARGIN = 40;
+const CAPTION_SIZE = 11;
+
+// One page per photo after the checklist: a header, the photo as large as fits, and its caption
+async function addPhotoPages(doc: Doc, font: PDFFont, bold: PDFFont, photos: Photo[], title: string) {
+  // Same paper size as the checklist, turned to match each photo so it fills the page
+  const size = doc.getPage(0).getSize();
+  const long = Math.max(size.width, size.height), short = Math.min(size.width, size.height);
+  for (const [i, photo] of photos.entries()) {
+    const [width, height] = photo.height > photo.width ? [short, long] : [long, short];
+    const boxWidth = width - 2 * MARGIN;
+    const page = doc.addPage([width, height]);
+    const image = await doc.embedJpg(photo.jpeg);
+
+    let y = height - MARGIN - 12;
+    page.drawText(`Photo ${i + 1} of ${photos.length}`, { x: MARGIN, y, size: 12, font: bold });
+    if (title) {
+      const text = encodable(font, title);
+      const size = Math.min(10, (10 * (boxWidth - 120)) / Math.max(1, font.widthOfTextAtSize(text, 10)));
+      page.drawText(text, { x: width - MARGIN - font.widthOfTextAtSize(text, size), y, size, font, color: rgb(0.3, 0.3, 0.3) });
+    }
+    y -= 14;
+
+    const caption = encodable(font, photo.caption.trim());
+    const lines = caption ? wrap(font, caption, CAPTION_SIZE, boxWidth) : [];
+    const captionHeight = lines.length * CAPTION_SIZE * LINE_HEIGHT;
+    const boxHeight = y - MARGIN - (lines.length ? captionHeight + 12 : 0);
+    const scale = Math.min(boxWidth / image.width, boxHeight / image.height);
+    const w = image.width * scale, h = image.height * scale;
+    page.drawImage(image, { x: MARGIN + (boxWidth - w) / 2, y: y - h, width: w, height: h });
+
+    lines.forEach((line, n) => {
+      page.drawText(line, { x: MARGIN, y: y - h - 12 - CAPTION_SIZE * LINE_HEIGHT * (n + 1) + CAPTION_SIZE * 0.2, size: CAPTION_SIZE, font });
+    });
+  }
+}
+
+// `title` names the BMP on the photo pages
+export async function buildFilledPdf(file: string, fields: OverlayField[], values: Values, photos: Photo[] = [], title = '') {
   const res = await fetch(file);   // same URL react-pdf shows
   if (!res.ok) throw new Error(`Could not load ${file} (${res.status})`);
   const doc = await PDFDocument.load(await res.arrayBuffer());
@@ -94,5 +134,6 @@ export async function buildFilledPdf(file: string, fields: OverlayField[], value
       if (text) drawText(page, font, f, encodable(font, text));
     }
   }
+  await addPhotoPages(doc, font, bold, photos, title);
   return doc.save();   // Uint8Array: the finished PDF file
 }

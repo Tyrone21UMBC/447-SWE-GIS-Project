@@ -13,7 +13,8 @@ class UserCreate(BaseModel):
 class UserResponse(BaseModel):
     id: int
     username: str
-    email: EmailStr = Field(pattern=r".+@umbc\.edu")
+    # No @umbc.edu check here: that rule is for new sign-ups, and older accounts may not follow it
+    email: str
     role: UserRoles
 
 class RoleUpdate(BaseModel):

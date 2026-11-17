@@ -47,7 +47,9 @@ const reportsStyles:Record <string, CSSProperties> = {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        alignItems: "center",
+        // "safe": on screens narrower than the checklist, overflow to the right (scrollable)
+        // instead of off the left edge, where it can't be reached
+        alignItems: "safe center",
     },
     reportsNav: {
         backgroundColor: "FF0000",
