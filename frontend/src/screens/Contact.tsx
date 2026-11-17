@@ -2,6 +2,7 @@ import Header from "../components/Header.tsx";
 import type { CSSProperties } from "react";
 import { NavLink } from "react-router";
 import { MapPin, Phone, Clock, ClipboardList } from "lucide-react";
+import { useSession } from "../auth.ts";
 
 const PHONE = "410-455-3219";
 const ADDRESS = ["Facilities Management Building", "1000 Hilltop Circle", "Baltimore, MD 21250"];
@@ -31,10 +32,11 @@ function Contact() {
   const now = campusNow();
   const today = HOURS[now.day];
   const isOpen = today !== null && now.minutes >= today.open && now.minutes < today.close;
+  const isLoggedIn = useSession() !== null;
 
   return (
     <div style={contactStyles.page}>
-      <Header screenID="contact" />
+      <Header />
       <main style={contactStyles.main}>
         <h1 style={contactStyles.title}>Contact Facilities Management</h1>
         <p style={contactStyles.subtitle}>
@@ -89,11 +91,16 @@ function Contact() {
           <div style={{ flex: "1 1 300px" }}>
             <h2 style={{ ...contactStyles.cardTitle, marginBottom: "6px" }}>Reporting a problem with a BMP?</h2>
             <p style={{ margin: 0 }}>
-              Find the BMP on the map, click it, and choose <strong>Report an issue</strong>. The inspection
+              {/* Reports need an account; logging in lands on the map */}
+              {!isLoggedIn && <>Log in first, then find </>}
+              {isLoggedIn && <>Find </>}
+              the BMP on the map, click it, and choose <strong>Report an issue</strong>. The inspection
               checklist opens with the BMP's details already filled in.
             </p>
           </div>
-          <NavLink to="/" style={contactStyles.primaryButton}>Open the map</NavLink>
+          <NavLink to={isLoggedIn ? "/" : "/login"} style={contactStyles.primaryButton}>
+            {isLoggedIn ? "Open the map" : "Log in"}
+          </NavLink>
         </section>
       </main>
     </div>
@@ -111,7 +118,7 @@ const contactStyles: Record<string, CSSProperties> = {
     boxSizing: "border-box",
     maxWidth: "1100px",
     margin: "0 auto",
-    padding: "calc(10vh + 32px) 24px 48px",
+    padding: "calc(var(--header-height) + 32px) 24px 48px",
   },
   title: {
     margin: "0 0 8px",

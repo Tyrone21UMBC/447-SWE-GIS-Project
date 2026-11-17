@@ -1,45 +1,342 @@
-/* .header {
+/* Top navigation bar. Pages offset their content by --header-height (index.css). */
+
+.app-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  width: auto;
-  height: 10vh;
   z-index: 9999;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #f9fafb;
+}
 
+.app-header-bar {
+  box-sizing: border-box;
+  height: var(--header-height);
   display: flex;
   align-items: center;
-
+  gap: 24px;
   padding: 0 20px;
-  box-sizing: border-box;
+  background: #111;
+  border-bottom: 3px solid #f7cc0d;
+}
 
-  background-color: #ffffff;
-  border-bottom: 1px solid #d1d5db;
-} */
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  color: inherit;
+  text-decoration: none;
+}
 
-
-/* .header-title {
-  
-} */
-/* .header-logo {
-  max-height: 6vh;
+.brand-logo {
+  height: 38px;
   width: auto;
   display: block;
-} */
+}
 
-/* .login-button {
-  margin-left: auto;
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-org {
+  color: #f7cc0d;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.brand-name {
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Links */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-link {
   display: inline-flex;
   align-items: center;
-  line-height: 1;
-  padding: 10px 20px;
-  margin-right: 10px;
-  color: #ffffff;
-  background-color: #000000;
-  border-radius: 5px;
-  font-size: 16px;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: #d1d5db;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.nav-link.active {
+  background: rgba(247, 204, 13, 0.14);
+  color: #f7cc0d;
+}
+
+.nav-link:focus-visible,
+.account-button:focus-visible,
+.menu-toggle:focus-visible,
+.primary-button:focus-visible,
+.ghost-button:focus-visible,
+.brand:focus-visible,
+.menu-item:focus-visible {
+  outline: 2px solid #f7cc0d;
+  outline-offset: 2px;
+}
+
+/* Right side */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.primary-button,
+.ghost-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-} */
+  transition: background-color 0.15s, border-color 0.15s;
+}
 
+.primary-button {
+  border: 1px solid #f7cc0d;
+  background: #f7cc0d;
+  color: #000;
+}
 
+.primary-button:hover {
+  background: #ffd93d;
+}
+
+.ghost-button {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: #f9fafb;
+}
+
+.ghost-button:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Account dropdown */
+.account {
+  position: relative;
+}
+
+.account-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.account-button:hover,
+.account-button[aria-expanded="true"] {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: #f7cc0d;
+  color: #000;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.account-name {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+}
+
+.chevron {
+  transition: transform 0.15s;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.account-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  padding: 6px;
+  border-radius: 12px;
+  background: #fff;
+  color: #111827;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.account-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 6px;
+}
+
+.account-info-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.role-badge {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.role-badge.role-admin {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.role-badge.role-staff {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: #f3f4f6;
+}
+
+/* Phone menu */
+.menu-toggle {
+  display: none;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mobile-menu {
+  display: none;
+}
+
+@media (max-width: 820px) {
+  .app-header-bar {
+    gap: 12px;
+    padding: 0 12px 0 16px;
+  }
+
+  .nav-links,
+  .nav-actions > .account,
+  .nav-actions > .primary-button,
+  .nav-actions > .ghost-button {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: calc(100vh - var(--header-height));
+    overflow-y: auto;
+    padding: 12px 16px 20px;
+    background: #111;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
+  }
+
+  .mobile-menu nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mobile-menu .nav-link {
+    padding: 12px 14px;
+    font-size: 17px;
+  }
+
+  .mobile-account {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mobile-account .account-info {
+    padding: 0;
+    margin: 0;
+    border: none;
+  }
+
+  .mobile-account .primary-button,
+  .mobile-account .ghost-button {
+    padding: 12px 16px;
+  }
+}

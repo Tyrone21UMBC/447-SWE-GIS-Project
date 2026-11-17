@@ -2,6 +2,11 @@
 @import '@arcgis/core/assets/esri/themes/light/main.css';
 @import '@arcgis/map-components/main.css';
 
+:root {
+  /* Height of the fixed top bar (components/Header.css); pages start below it */
+  --header-height: 64px;
+}
+
 html,
 body,
 #root {

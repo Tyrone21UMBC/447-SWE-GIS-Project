@@ -120,7 +120,7 @@ export default function Login () {
   return (
 
     <div style={loginStyles.formWrapper}>
-      <Header screenID="login" />
+      <Header />
       <form style={loginStyles.form} onSubmit={handleSubmit} >
         <h1 style={loginStyles.formTitle}>LOGIN</h1>
         <div style={loginStyles.formGroup}> 

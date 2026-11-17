@@ -10,7 +10,7 @@ function Reports(){
   const data = getBmp(bmpId);
   return (
       <div>
-          <Header screenID="reports" />
+          <Header />
           <div style={reportsStyles.reportsContainer}>
               <style>
                   {`
@@ -43,7 +43,7 @@ function Reports(){
 
 const reportsStyles:Record <string, CSSProperties> = {
     reportsContainer: {
-        marginTop: "10vh",
+        marginTop: "var(--header-height)",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",

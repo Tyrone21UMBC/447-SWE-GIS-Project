@@ -4,7 +4,7 @@ import Header from "./Header.tsx";
 import { hasRole, useSession, type Role } from "../auth.ts";
 
 const forbiddenStyles: CSSProperties = {
-  marginTop: "10vh",
+  marginTop: "var(--header-height)",
   padding: "2rem",
   textAlign: "center",
 };

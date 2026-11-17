@@ -111,7 +111,7 @@ function Admin() {
 
   return (
     <div style={adminStyles.page}>
-      <Header screenID="admin" />
+      <Header />
       <main style={adminStyles.main}>
         <h1 style={adminStyles.title}>Admin dashboard</h1>
         <p style={adminStyles.subtitle}>Track work orders, manage who can use the app, and review the BMP inventory.</p>
@@ -242,7 +242,7 @@ const adminStyles: Record<string, CSSProperties> = {
     boxSizing: "border-box",
     maxWidth: "1200px",
     margin: "0 auto",
-    padding: "calc(10vh + 32px) 24px 48px",
+    padding: "calc(var(--header-height) + 32px) 24px 48px",
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
   },
   title: {

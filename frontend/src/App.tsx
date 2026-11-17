@@ -1,6 +1,7 @@
 // 1. Modified this import to include useRef and useEffect
 import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useSession } from './auth.ts';
 // Register only the ArcGIS web components this view uses. Each import
 // self-registers its custom element (e.g. <arcgis-map>).
 import '@arcgis/map-components/dist/components/arcgis-map'
@@ -86,8 +87,8 @@ function createBmpLayer() {
 const appStyles: CSSProperties = {
   display: "block",
   width: "100%",
-  height: "calc(100vh - 10vh)",
-  marginTop: "10vh",
+  height: "calc(100vh - var(--header-height))",
+  marginTop: "var(--header-height)",
 };
 const reportButton: CSSProperties = {
   position: "fixed",
@@ -108,6 +109,7 @@ function App() {
   // SWM Tracking Number of the clicked BMP
   const [selectedBMP, setSelectedBMP] = useState<string | null>(null);
   const navigate = useNavigate();
+  const isLoggedIn = useSession() !== null;
   // 3. Added useEffect hook to manage layer visibility configurations on map load
   useEffect(() => {
     const mapElement = mapRef.current;
@@ -186,11 +188,12 @@ function App() {
           <button 
             style={reportButton}
             onClick={() => {
+              // Logged out, the report page sends you to log in and then back to this BMP
               navigate(`/reports/${encodeURIComponent(selectedBMP)}`);
             }}
                  
           >
-            Report an issue
+            {isLoggedIn ? "Report an issue" : "Log in to report an issue"}
           </button>
           )}
         </nav>
