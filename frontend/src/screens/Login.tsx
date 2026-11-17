@@ -1,11 +1,10 @@
 import * as React from "react";
 import type { CSSProperties } from 'react';
-import "./Login.css"
 import Header from  "../components/Header.tsx"
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate, type Location } from "react-router";
 import mapBG from "../../public/mapBG.png";
-const API_URL = "http://localhost:8000";
+import { apiFetch, setSession, toRole } from "../auth.ts";
 
 
 export const loginStyles: Record<string, CSSProperties> = {
@@ -76,6 +75,8 @@ export default function Login () {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  // RequireAuth sends people here with the page they wanted
+  const from = (useLocation().state as { from?: Location } | null)?.from;
   // useState for login box hover
   const [isLoginButtonHovered, setIsLoginButtonHovered] = useState(false);
   
@@ -89,7 +90,7 @@ export default function Login () {
     }
 
     try {
-     const res = await fetch(`${API_URL}/login`, {
+     const res = await apiFetch("/login", {
        method : "POST",
        headers : {"Content-Type":"application/json"},
        body : JSON.stringify({ email,password })
@@ -107,8 +108,9 @@ export default function Login () {
      }
      const data = await res.json();
      console.log("Logged in as ", data.username);
-     localStorage.setItem("user", JSON.stringify({id: data.user_id, username: data.username }));
-     navigate("/"); //success: go to the application
+     setSession({ token: data.access_token, username: data.username, role: toRole(data.role) });
+     // success: back to the page that needed a login, or the map
+     navigate(from ? from.pathname + from.search : "/", { replace: true });
 
     } catch {
       setError("Could not reach the server");

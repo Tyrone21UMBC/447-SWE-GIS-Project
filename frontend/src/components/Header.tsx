@@ -3,6 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router"
 import type { CSSProperties } from "react";
 import umbc_logo2 from "../../public/umbc_logo_with_words.png";
 import React, { useState } from 'react';
+import { logout, useSession } from "../auth.ts";
 
 
 
@@ -123,11 +124,11 @@ function Header({ screenID="" }) {
   const targetPath4 = location.pathname === "/admin" ? "/" : "/admin";
   const linkText4 = location.pathname === "/admin" ? "Admin" : "Admin";
 
-  const stored = localStorage.getItem("user")
-  const isLoggedIn = stored !== null;
+  const session = useSession();
+  const isLoggedIn = session !== null;
   const navigate = useNavigate();
-  function handleLogout() {
-    localStorage.removeItem("user");
+  async function handleLogout() {
+    await logout();
     navigate("/");
   }
   return (
@@ -162,7 +163,8 @@ function Header({ screenID="" }) {
                     onMouseEnter={() => setIsHoveredLink2(true)} onMouseOut={() => setIsHoveredLink2(false)}>
                     {linkText3}
                 </NavLink>
-                <NavLink to={targetPath4} 
+                {session.role === "admin" && (
+                <NavLink to={targetPath4}
                   style={
                     screenID === "admin"
                       ? { ...screenIDStyling.button, ...(isHoveredLink3 ? screenIDStyling.buttonHover : {}) }
@@ -171,6 +173,7 @@ function Header({ screenID="" }) {
                     onMouseEnter={() => setIsHoveredLink3(true)} onMouseOut={() => setIsHoveredLink3(false)}>
                     {linkText4}
                 </NavLink>
+                )}
               </div>
               <div style={headerStyles.loginContainer}>
                 <button

@@ -7,13 +7,13 @@ import urllib.request
 
 from fastapi import FastAPI, Depends, HTTPException
 from security import hash_password, require_admin, verify_password
-from models import User, LoginSession
+from models import User, LoginSession, WorkOrder
 from schema import UserCreate, UserResponse, UserLogin, ReportUpload, Token
 from database import get_db, engine, Base
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from auth import create_session, get_current_user, hash_token, oauth2_scheme
-from routers import users
+from routers import users, work_orders
 
 
 
@@ -28,6 +28,7 @@ app.add_middleware(
 )
 
 app.include_router(users.router)
+app.include_router(work_orders.router)
 
 Base.metadata.create_all(bind=engine)
 
@@ -96,7 +97,7 @@ def logout(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 
 # Save a submitted report PDF to Google Drive
 @app.post("/reports")
-def upload_report(report: ReportUpload, user: User = Depends(get_current_user)):
+def upload_report(report: ReportUpload, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     if not APPS_SCRIPT_URL or not APPS_SCRIPT_SECRET:
         raise HTTPException(status_code=500, detail="Report upload is not configured")
 
@@ -118,4 +119,15 @@ def upload_report(report: ReportUpload, user: User = Depends(get_current_user)):
 
     if not result.get("ok"):
         raise HTTPException(status_code=502, detail="Google Drive rejected the report")
-    return {"message": "Report saved", "drive_file_id": result["id"], "drive_url": result["url"]}
+
+    # Each report opens a work order for the admins to track
+    order = WorkOrder(
+        bmp_id=report.bmp_id,
+        bmp_name=report.bmp_name,
+        filename=report.filename,
+        drive_url=result["url"],
+        submitted_by=user.id
+    )
+    db.add(order)
+    db.commit()
+    return {"message": "Report saved", "drive_file_id": result["id"], "drive_url": result["url"], "work_order_id": order.id}

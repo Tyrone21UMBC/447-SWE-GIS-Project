@@ -3,7 +3,7 @@ import Header from "../components/Header.tsx";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { loginStyles } from "./Login.tsx";
-const API_URL = "http://localhost:8000";
+import { apiFetch } from "../auth.ts";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -29,7 +29,7 @@ export default function Register() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/users`, {
+      const res = await apiFetch("/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),

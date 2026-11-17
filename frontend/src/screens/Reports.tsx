@@ -2,10 +2,10 @@ import Header from "../components/Header.tsx";
 import PdfViewer from "../components/PdfViewer.tsx";
 import type { CSSProperties } from 'react';
 import { useParams } from 'react-router';
-import { getBmp } from '../data/bmpMaster.ts';
+import { getBmp } from '../data/bmps.ts';
 
 function Reports(){
-  // App navigates to /reports/<UMBC BMP Sequence Number>
+  // App navigates to /reports/<SWM Tracking Number>
   const { bmpId } = useParams();
   const data = getBmp(bmpId);
   return (
@@ -25,8 +25,7 @@ function Reports(){
                   {data ? (
                     <h2>{data.name ?? data.trackingNumber} ({data.trackingNumber})</h2>
                   ) : bmpId ? (
-                    <p>No BMP i
-                    with ID "{bmpId}" in the master list.</p>
+                    <p>No BMP with ID "{bmpId}" in the GIS data.</p>
                   ) : (
                     <p>No BMP selected. Pick one on the map to prefill the checklist.</p>
                   )}

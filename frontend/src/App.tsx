@@ -21,8 +21,7 @@ import Graphic from '@arcgis/core/Graphic.js'
 import Extent from '@arcgis/core/geometry/Extent.js'
 import Basemap from '@arcgis/core/Basemap.js'
 import LocalBasemapsSource from '@arcgis/core/widgets/BasemapGallery/support/LocalBasemapsSource.js'
-import { BMP_RECORDS, type BmpRecord } from './data/bmpMaster.ts'
-import './App.css'
+import { BMP_RECORDS, type BmpRecord } from './data/bmps.ts'
 
 // import for the CSS styling format
 import type { CSSProperties } from "react";
@@ -34,11 +33,11 @@ const UMBC_SCALE = 9000;
 // Keep the view on campus: panning stops at the edge of our BMPs plus a margin,
 // and zooming out stops at about the whole campus
 const CAMPUS_EXTENT = (() => {
-  const pts = BMP_RECORDS.filter(r => r.lat !== null && r.lon !== null);
   const pad = 0.002;   // degrees, ~200 m
+  const lons = BMP_RECORDS.map(r => r.lon), lats = BMP_RECORDS.map(r => r.lat);
   return new Extent({
-    xmin: Math.min(...pts.map(r => r.lon!)) - pad, xmax: Math.max(...pts.map(r => r.lon!)) + pad,
-    ymin: Math.min(...pts.map(r => r.lat!)) - pad, ymax: Math.max(...pts.map(r => r.lat!)) + pad,
+    xmin: Math.min(...lons) - pad, xmax: Math.max(...lons) + pad,
+    ymin: Math.min(...lats) - pad, ymax: Math.max(...lats) + pad,
     spatialReference: { wkid: 4326 },
   });
 })();
@@ -46,38 +45,33 @@ const CAMPUS_EXTENT = (() => {
 const BASEMAPS = new LocalBasemapsSource({
   basemaps: ['streets-night-vector', 'satellite', 'hybrid', 'topo-vector', 'gray-vector'].map(id => Basemap.fromId(id)!),
 });
-const BMP_OUTLINE_LAYER_ID = 'umbc-bmp-outlines';
-const BMP_POINT_LAYER_ID = 'umbc-bmp-points';
+const BMP_LAYER_ID = 'umbc-bmps';
 
 const BMP_FIELDS = [
   { name: 'OBJECTID', type: 'oid' as const },
-  { name: 'id', type: 'string' as const },
   { name: 'name', type: 'string' as const },
   { name: 'trackingNumber', type: 'string' as const },
+  { name: 'facilityType', type: 'string' as const },
 ];
 
 function bmpAttributes(r: BmpRecord, i: number) {
-  return { OBJECTID: i + 1, id: r.id, name: r.name ?? r.trackingNumber, trackingNumber: r.trackingNumber };
+  return { OBJECTID: i + 1, name: r.name ?? r.trackingNumber, trackingNumber: r.trackingNumber, facilityType: r.facilityType };
 }
 
-// Our own BMP layers, built from the master list. Outlines come from UMBC's
-// SWM Tracking geodatabase; BMPs it has no outline for are drawn as points.
+// Our own BMP layer, built from the outlines in UMBC's SWM Tracking geodatabase.
 // The web map's "BMP Database" layer is an older, partial copy.
-function createBmpLayers() {
-  const common = {
+function createBmpLayer() {
+  return new FeatureLayer({
+    id: BMP_LAYER_ID,
+    title: 'BMPs',
     objectIdField: 'OBJECTID',
     fields: BMP_FIELDS,
     spatialReference: { wkid: 4326 },
     outFields: ['*'],
-    popupTemplate: { title: '{name}', content: 'BMP ID: {trackingNumber}' },
-  };
-  const outlines = new FeatureLayer({
-    ...common,
-    id: BMP_OUTLINE_LAYER_ID,
-    title: 'BMPs (outlines)',
+    popupTemplate: { title: '{name}', content: 'BMP ID: {trackingNumber}<br>Type: {facilityType}' },
     geometryType: 'polygon',
-    source: BMP_RECORDS.filter(r => r.shape).map((r, i) => new Graphic({
-      geometry: { type: 'polygon', rings: r.shape!, spatialReference: { wkid: 4326 } },
+    source: BMP_RECORDS.map((r, i) => new Graphic({
+      geometry: { type: 'polygon', rings: r.shape, spatialReference: { wkid: 4326 } },
       attributes: bmpAttributes(r, i),
     })),
     renderer: {
@@ -85,21 +79,6 @@ function createBmpLayers() {
       symbol: { type: 'simple-fill', color: [247, 204, 13, 0.35], outline: { color: '#f7cc0d', width: 1.5 } },
     },
   });
-  const points = new FeatureLayer({
-    ...common,
-    id: BMP_POINT_LAYER_ID,
-    title: 'BMPs (no outline)',
-    geometryType: 'point',
-    source: BMP_RECORDS.filter(r => !r.shape && r.lat !== null && r.lon !== null).map((r, i) => new Graphic({
-      geometry: { type: 'point', latitude: r.lat!, longitude: r.lon! },
-      attributes: bmpAttributes(r, i),
-    })),
-    renderer: {
-      type: 'simple',
-      symbol: { type: 'simple-marker', size: 9, color: '#f7cc0d', outline: { color: '#000', width: 1 } },
-    },
-  });
-  return [outlines, points];
 }
 
 // Stylesheets format for styles
@@ -126,7 +105,7 @@ const reportButton: CSSProperties = {
 function App() {
   // 2. Added ref to grab the arcgis-map DOM node safely
   const mapRef = useRef<any>(null);
-  // UMBC BMP Sequence Number of the clicked marker
+  // SWM Tracking Number of the clicked BMP
   const [selectedBMP, setSelectedBMP] = useState<string | null>(null);
   const navigate = useNavigate();
   // 3. Added useEffect hook to manage layer visibility configurations on map load
@@ -140,18 +119,17 @@ function App() {
       if (view && view.map) {
         view.constraints = { geometry: CAMPUS_EXTENT, minScale: 20000, maxScale: 500, rotationEnabled: false };
 
-        const ourLayers = [BMP_OUTLINE_LAYER_ID, BMP_POINT_LAYER_ID];
-        if (!view.map.findLayerById(BMP_OUTLINE_LAYER_ID)) {
-          view.map.addMany(createBmpLayers());
+        if (!view.map.findLayerById(BMP_LAYER_ID)) {
+          view.map.add(createBmpLayer());
         }
-        const bmpLayers = ourLayers.map(id => view.map.findLayerById(id));
+        const bmpLayers = [view.map.findLayerById(BMP_LAYER_ID)];
 
         // Detect clicks/touches on our BMPs
         mapElement._clickHandle?.remove();
         const clickHandle = view.on("click", async (event: any) => {
           const response = await view.hitTest(event, { include: bmpLayers });
           const hit = response.results.find((r: any) => r.type === "graphic");
-          setSelectedBMP(hit ? hit.graphic.attributes.id : null);
+          setSelectedBMP(hit ? hit.graphic.attributes.trackingNumber : null);
         });
 
         // Store the handle so it can be removed later
