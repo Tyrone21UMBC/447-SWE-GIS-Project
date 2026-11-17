@@ -2,12 +2,13 @@ import Header from "../components/Header.tsx";
 import PdfViewer from "../components/PdfViewer.tsx";
 import type { CSSProperties } from 'react';
 import { useParams } from 'react-router';
-import { getBmp } from '../data/bmps.ts';
+import { getBmp, useBmps } from '../data/bmps.ts';
 
 function Reports(){
   // App navigates to /reports/<SWM Tracking Number>
   const { bmpId } = useParams();
-  const data = getBmp(bmpId);
+  const { records, loaded } = useBmps();
+  const data = getBmp(bmpId, records);
   return (
       <div>
           <Header />
@@ -24,8 +25,10 @@ function Reports(){
                 <div style={reportsStyles.reportsContent}>
                   {data ? (
                     <h2>{data.name ?? data.trackingNumber} ({data.trackingNumber})</h2>
+                  ) : bmpId && !loaded ? (
+                    <p>Loading BMP…</p>   // it may be one added in the app, which comes from the backend
                   ) : bmpId ? (
-                    <p>No BMP with ID "{bmpId}" in the GIS data.</p>
+                    <p>No BMP with ID "{bmpId}".</p>
                   ) : (
                     <p>No BMP selected. Pick one on the map to prefill the checklist.</p>
                   )}
@@ -57,6 +60,10 @@ const reportsStyles:Record <string, CSSProperties> = {
         border: "2px solid #000",
     },
     reportsContent: {
+        // Full width so the checklist can size itself to the screen (tablets, phones)
+        boxSizing: "border-box",
+        width: "100%",
+        padding: "0 12px",
         backgroundColor: "#FFFFFF",
         display: "flex",
         flexDirection: "column",

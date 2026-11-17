@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime 
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Float, Date 
 from sqlalchemy.orm import relationship
 from database import Base
 from roles import UserRoles
@@ -55,3 +55,24 @@ class WorkOrder(Base):
     updated_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
 
     submitter = relationship(User)
+
+
+# BMPs added by an admin in the app. The rest come from UMBC's SWM Tracking
+# geodatabase (frontend/src/data/bmps.json); if both have an ID, the geodatabase wins.
+class Bmp(Base):
+    __tablename__ = "bmps"
+
+    id = Column(Integer, primary_key=True)
+    tracking_number = Column(String, unique=True, nullable=False, index=True)   # SWM Tracking Number
+    name = Column(String, nullable=False)
+    facility_type = Column(String, nullable=False)
+    sf_number = Column(String)
+    outfall_point = Column(String)
+    drainage_area = Column(String)
+    in_service = Column(Date)               # date placed into service
+    lat = Column(Float, nullable=False)
+    lon = Column(Float, nullable=False)
+    created_by = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"))
+    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+
+    creator = relationship(User)

@@ -19,3 +19,19 @@ body,
 
 
 
+
+/* Touch screens (tablets, phones): controls big enough for a finger (~44 px, Apple's
+   guideline), and 16 px text, below which iPad and iPhone Safari zoom in on every tap.
+   Not the checklist's own fields, which have to match the boxes printed on the form. */
+@media (pointer: coarse) {
+  :is(main, form, [role="dialog"], #report-photos) :is(input:not([type="checkbox"], [type="radio"]), select, textarea) {
+    min-height: 44px;
+    font-size: 16px !important;
+  }
+  :is(main, form, [role="dialog"], #report-photos) :is(button, a[aria-label]) {
+    min-height: 40px;
+    min-width: 40px;
+    justify-content: center;
+    align-items: center;
+  }
+}

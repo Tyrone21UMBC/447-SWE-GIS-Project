@@ -27,7 +27,9 @@ export const loginStyles: Record<string, CSSProperties> = {
     paddingTop: ".2rem",
     borderRadius: "12px",
     border: "1px solid #f7cc0d",
-    width: "25%",
+    // A quarter of a desktop screen, but never cramped on a tablet or phone
+    boxSizing: "border-box",
+    width: "min(400px, calc(100% - 32px))",
     height: "fit-content",
   },
   formTitle: {

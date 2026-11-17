@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Camera } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -29,6 +29,25 @@ pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
 const FIELDS = checklistFields as OverlayField[];
 
+// Checkboxes on the form are ~10 px, too small to hit with a finger. Each gets an invisible
+// tap area that grows toward its nearest neighbor, stopping halfway so areas never overlap.
+const MAX_TAP_PAD = 8;   // scale-1 px on each side
+const TAP_PAD = (() => {
+  const boxes = FIELDS.filter(f => f.type === 'checkbox' || f.type === 'radio');
+  const pads = new Map<string, number>();
+  for (const a of boxes) {
+    let gap = Infinity;
+    for (const b of boxes) {
+      if (a === b || a.page !== b.page) continue;
+      const dx = Math.max(0, Math.max(a.left, b.left) - Math.min(a.left + a.width, b.left + b.width));
+      const dy = Math.max(0, Math.max(a.top, b.top) - Math.min(a.top + a.height, b.top + b.height));
+      gap = Math.min(gap, Math.max(dx, dy));
+    }
+    pads.set(a.id, Math.min(MAX_TAP_PAD, gap / 2));
+  }
+  return pads;
+})();
+
 const isoDate = (v?: string) => (v && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '');
 const todayIso = () => {
   const d = new Date();
@@ -46,7 +65,8 @@ const PREFILL: Record<string, (r: BmpRecord) => string | undefined> = {
 // Text fields hold strings, checkboxes booleans, radio groups the id of the chosen option
 export type Values = Record<string, string | boolean>;
 
-type Props = { file: string; data: BmpRecord | null; scale?: number };
+// maxScale: the size on wide screens; narrower ones (tablets, phones) shrink the pages to fit
+type Props = { file: string; data: BmpRecord | null; maxScale?: number };
 
 const actions: CSSProperties = {
   position: "fixed",
@@ -104,8 +124,12 @@ async function uploadReport(pdf: Uint8Array, filename: string, bmp: BmpRecord | 
   return body.drive_url;
 }
 
-export default function PdfViewer({ file, data, scale = 1.25 }: Props) {
+export default function PdfViewer({ file, data, maxScale = 1.25 }: Props) {
   const [numPages, setNumPages] = useState(0);
+  const [pageWidth, setPageWidth] = useState(792);   // scale-1 width of the checklist's (landscape Letter) pages
+  const [width, setWidth] = useState(0);              // space available, in px
+  const container = useRef<HTMLDivElement>(null);
+  const scale = width ? Math.min(maxScale, width / pageWidth) : maxScale;
   const [error, setError] = useState<string | null>(null);
   const [values, setValues ] = useState<Values>({});
   const [submitting, setSubmitting] = useState(false);
@@ -114,6 +138,15 @@ export default function PdfViewer({ file, data, scale = 1.25 }: Props) {
   const [submittedUrl, setSubmittedUrl] = useState<string | null>(null);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [photosBusy, setPhotosBusy] = useState(false);
+  // Follows rotation and window resizes
+  useEffect(() => {
+    const el = container.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     if (!data) return;
     const initial: Values = {};
@@ -161,13 +194,31 @@ export default function PdfViewer({ file, data, scale = 1.25 }: Props) {
       border: 'none',
       background: 'rgba(0, 112, 175, 0.12)',
     };
+    const pad = (TAP_PAD.get(f.id) ?? 0) * scale;
+    // The label is the larger tap area; tapping it toggles the box inside
+    const tapArea: CSSProperties = {
+      ...box,
+      left: box.left as number - pad,
+      top: box.top as number - pad,
+      width: box.width as number + 2 * pad,
+      height: box.height as number + 2 * pad,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+    };
+    const mark: CSSProperties = { width: f.width * scale, height: f.height * scale, margin: 0, flexShrink: 0, cursor: 'pointer' };
     switch (f.type) {
       case 'checkbox':
-        return <input key={f.id} type="checkbox" title={f.label} style={box}
-          checked={values[f.id] === true} onChange={e => set(f.id, e.target.checked)} />;
+        return <label key={f.id} style={tapArea}>
+          <input type="checkbox" title={f.label} style={mark}
+            checked={values[f.id] === true} onChange={e => set(f.id, e.target.checked)} />
+        </label>;
       case 'radio':
-        return <input key={f.id} type="radio" title={f.label} style={box} name={f.group}
-          checked={values[f.group!] === f.id} onChange={() => set(f.group!, f.id)} />;
+        return <label key={f.id} style={tapArea}>
+          <input type="radio" title={f.label} style={mark} name={f.group}
+            checked={values[f.group!] === f.id} onChange={() => set(f.group!, f.id)} />
+        </label>;
       case 'textarea':
         return <textarea key={f.id} title={f.label} style={{ ...textStyle, resize: 'none', lineHeight: 1.2 }}
           value={String(values[f.id] ?? '')} onChange={e => set(f.id, e.target.value)} />;
@@ -178,16 +229,14 @@ export default function PdfViewer({ file, data, scale = 1.25 }: Props) {
   };
 
   return (
-    <div 
-      style={{
-        width: "80%",
-      }}
-    >
+    <div ref={container} style={{ width: "100%", maxWidth: pageWidth * maxScale }}>
       {error && <p>{error}</p>}
       <Document
         file={file}
-        onLoadSuccess={({numPages}) => {
-          setNumPages(numPages);
+        onLoadSuccess={async pdf => {
+          const [x0, , x1] = (await pdf.getPage(1)).view;
+          setPageWidth(x1 - x0);
+          setNumPages(pdf.numPages);
           setError(null);
         }}
         onLoadError={(err) => {

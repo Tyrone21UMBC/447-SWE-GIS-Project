@@ -13,7 +13,7 @@ from database import get_db, engine, Base
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from auth import create_session, get_current_user, hash_token, oauth2_scheme
-from routers import users, work_orders
+from routers import bmps, users, work_orders
 
 
 
@@ -29,6 +29,7 @@ app.add_middleware(
 
 app.include_router(users.router)
 app.include_router(work_orders.router)
+app.include_router(bmps.router)
 
 Base.metadata.create_all(bind=engine)
 
