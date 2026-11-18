@@ -60,9 +60,9 @@ Once you've cloned the repository
   3. Then run <code>npm install</code> to install all the frontend dependencies.
   4. Then run <code>npm run dev</code> to run the application on your browser. Once you run this command, you can now copy the localhost url ([http://localhost:5173](http://localhost:5173/)) and paste it to your browser of choice (Chrome, Firefox, Edge, etc.).
 
-**backend**
+**Backend**
   1. Run the change directory command and enter the project and then the backend folder.
-  2. Then run this command <code>pip install -r requirements.txt</code> to install all the backend requirements.
+  2. Then run this command <code>pip install -r requirements.txt</code> to install all the backend requirements. If you have a newer versions of Python, like Python 3.13 and newer, run <code>pip install -r requirements2.txt</code> to adjust to account for the 3.3.5 versions of psycopg and psycopg-binary.
   3. You may need to create a python virtual environment to run the backend if the above command doesn't work.
   4. Then run <code>uvicorn main:app --reload</code> to actually run the backend application. A success message will look like this "Application startup complete".
 
