@@ -56,8 +56,9 @@ Once you've cloned the repository
 
 **Frontend**
   1. Run the change directory command to enter the project and then the frontend folder.
-  2. Then run <code>npm install</code> to install all the frontend dependencies.
-  3. Then run <code>npm run dev</code> to run the application on your browser. Once you run this command, you can now copy the localhost url ([http://localhost:5173](http://localhost:5173/)) and paste it to your browser of choice (Chrome, Firefox, Edge, etc.).
+  2. If you don't have node installed already, follow this (https://nodejs.org/en/download) to download node package manager (npm).
+  3. Then run <code>npm install</code> to install all the frontend dependencies.
+  4. Then run <code>npm run dev</code> to run the application on your browser. Once you run this command, you can now copy the localhost url ([http://localhost:5173](http://localhost:5173/)) and paste it to your browser of choice (Chrome, Firefox, Edge, etc.).
 
 **backend**
   1. Run the change directory command and enter the project and then the backend folder.
